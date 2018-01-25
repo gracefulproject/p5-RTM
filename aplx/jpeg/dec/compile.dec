@@ -1,0 +1,14 @@
+#!/bin/bash
+mkdir -p build/gnu
+make -f Makefile.dec
+APLX=mSpinJPEGdec.aplx
+if [ -e "$APLX" ]
+then
+    mkdir -p ../../bin
+    mv "$APLX" ../../bin/
+    rm -rf build
+    echo
+    echo "[INFO] The aplx is moved into ../../bin/"$APLX
+else
+    echo "[ERR] Compilation error"
+fi

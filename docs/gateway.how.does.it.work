@@ -1,0 +1,30 @@
+This is for special function of chip <2,2>:
+  - it runs rgb2gray
+  - it computes frame rate (will be used later for RTM)
+  - in the absence of jpeg encoder/decoder, it retrieves data from chip <0,0> and send data to chip <0,0> as well
+
+Image or video streaming?
+In either case, gateway SHOULD receive SDP containing SDP_IMG_INFO_PORT with the following condition:
+- set cmd_rc to 0, indicating a new frame size is goint to be sent
+  set cmd_rc to 1, indicating a continuation of the same frame size (useful for video streaming); hence, no releasing imgBuf in sdram
+
+
+Histogram counting mechanism:
+- see histogram_counting_mechanism.png
+- phases:
+  - phase-0: initiating the chain
+  - phase-1: core 3 -> core 4, core 9 -> core 8, core 10 -> core 11, core 16 -> core 15
+  - phase-2: core 4 -> core 5, core 8 -> core 7, core 11 -> core 12, core 15 -> core 14
+  - phase-3: core 5 -> core 6, core 7 -> core 6, core 12 -> core 13, core 14 -> core 13
+  - phase-4: core 6 -> core 2, core 13 -> core 2
+  - phase-5: core-2 bcast histogram, core-3 to core 12 bcast gray image
+             (we use only 10 cores for bcast gray image, because we don't know how many cores are in vidpro chips)
+
+Broadcasting gray image mechanism:
+- using 10 cores: core-3 to core-12
+  --> for this, LEAD_CORE broadcast image size to all cores (via FRPL) when LEAD_CORE receives sdp containing SDP_IMG_INFO_PORT
+  --> similar to/coincident with initImgBuf
+- gray image will be broadcasted alongside the histogram (histogram is broadcasted by core-2)
+  --> actually, gray image and histogram is forwarded to vidpro master (chip 3,3). From there, it will be broadcasted further
+- broadcasting is performed in phase-5 after histogram counting mechanism:
+

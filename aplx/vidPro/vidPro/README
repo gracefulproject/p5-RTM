@@ -1,0 +1,8 @@
+In this version, we classify cores into two groups: master and worker
+
+Master are cores with ID==LEAD_CORE (usually 2), and doesn't do intensive processing, but more into coordination. Each chip has a master (predefined as core-2), and one special master core in the root node (chip 3,3) will be assigned as the root master.
+Worker are cores that intensionally perform processing (intensive), usually with ID>2. They are coordinated by their local master.
+
+There's a root node that receives initial data from gateway, and this root node is predefined to occupy chip <3,3>. From this master node, the data will be broadcasted to all other nodes.
+Also, the root master will determine how many nodes will be invoked in processing; since the image size may require less nodes (not all 48 chips will be used). So, the root master will inform other node if they should be involving in processing or not. Hence, it performs network discovery in the beginning of application.
+

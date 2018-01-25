@@ -1,0 +1,18 @@
+Main idea:
+- jpeg encoder will run on chip <0,0>, <1,0>, <0,1>, and <1,1>, where the leader is in <0,0>
+- jpeg decoder will run on chip <2,0>, <3,0>, <2,1>, and <3,1>, where the leader is in <2,0>
+- special function for chip <2,2> (let's call it gateway):
+  - it runs rgb2gray
+  - it computes frame rate (will be used later for RTM)
+  - in the absence of jpeg encoder/decoder, it retrieves data from chip <0,0> and send data to chip <0,0> as well
+- the rest will be used for vidPro, where the leader is <3,3>
+- core-1 in each chip is dedicated for governor
+
+
+==========
+vidPro:
+----------
+- Generally, it could process either RGB or gray image. But here, we concentrate on gray images. For this, chip <2,2> operates also as a RGB-to-gray converter.
+- In the absence of jpeg_enc, chip <0,0> will forward data it receives from ETH-link to chip <2,2>, core-by-core. The designated cores are: 2-11 (10-cores). Also in the absence of jpeg_dec, chip <0,0> will receives the resulting image from chip <2,2> and forward it through ETH-link. For this, the same designated cores (10-cores) will be used.
+- Since chip <2,2> will concentrate on data collection and rgb2gray scalling, chip <3,3> will take the responsibility as the vidPro leader.
+

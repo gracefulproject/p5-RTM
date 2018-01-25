@@ -1,0 +1,3 @@
+chipFwdr - data gateway in the absence of jpeg_enc/dec, will sit in <0,0>
+rgb2gray - data collector and rgb2gray converter, will sit in <2,2>
+vidPro - edge detection and image filtering, will be coordinated by <3,3>

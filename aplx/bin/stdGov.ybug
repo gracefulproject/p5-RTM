@@ -1,0 +1,5 @@
+app_stop 255
+sleep 1
+app_load stdGov.aplx . 1 255
+sleep 1
+app_sig all 255 sync0

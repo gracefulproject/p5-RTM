@@ -1,0 +1,3 @@
+APP := mSpinJPEGenc
+OBJECTS := mSpinJPEGenc.o encHandlers.o encoder.o encHuff.o
+include $(SPINN_DIRS)/make/app.make

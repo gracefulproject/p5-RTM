@@ -1,0 +1,33 @@
+It replaces jpeg_enc/dec, and should sit it chip <0,0>.
+It receives data from host, and forward to chip <2,2> using MCP core-to-core.
+Vice versa, it receives data from chip <2,2> using MCPL core-to-core.
+
+Core distribution:
+core 2-6: receiving image from host-PC via sdp, and fwd via MCPD to gateway
+core 7-11: receiving result from gateway via MCPL
+core 12: sending result to host-PC
+
+Note:
+- We cannot use more than 1 core to send SDP to host-PC, otherwise, it raises many SWC.
+  Hence, we allocate only core-12 for this.
+
+The flow:
+- when chipFwdr receives frame info, it just forwards it to chip <2,2> by changing
+  the dest_addr in the sdp packet. It then tells the host-PC an acknowledge, so that
+  the host-PC starts streaming the pixel chunks.
+- host-PC split the raw image data into chunks. Each chunk contains up to 88 pixels (264 bytes):
+  --> we use 264 to ease copying data into MCPL, because 264/3=88 pixels and 264/4=66 MCPL iteration
+  hence it is organized as follows:
+  cmd_rc = number of RGB pixels in the chunk
+  seq = chunk sequence number
+  arg1,arg2,arg3,data[252] = pixel chunk
+  --> previously, it was organized such that each chunk contains only one RGB channel
+      (either R, G, or B) in 272-byte, and the sequence number is split into two part:
+      pxSeq.high in sdp.tag and pxSeq.low in sdp.srce_port
+  --> this is because we rely on Qt mechanism to read pixel values (using QColor function)
+      see: cspinncomm.cpp in pC-VidPro/gui/SpiNNvidStreamer/src
+- the host-PC iterate the destination core for each sending
+  --> hence, there's an internal counter that manage which core will be the destination
+
+- when a core in chip <0,0> receives an sdp, it forwards immediately using MCPL to the
+  corresponding core in chip <2,2>

@@ -1,0 +1,11 @@
+=============== This is the master part for encoder - mSpinJPEG ================
+How does it work?
+- It works in conjuction with mSpinJPEGdec
+- For testing purpose: 
+  - mSpinJPEGdec receives raw image (grayscale 1 channel) from host-PC via SDP
+  - mSPinJPEGdec allocate sdram buffer for that raw image
+  - once complete, the mSpinJPEGdec send FR packet to mSpinJPEGenc, which contains
+    the address of that sdram buffer
+  - when receiving the FR packet, mSpinJPEGenc starts the encoding
+  - once finish, the mSpinJPEGenc send the result to host-PC
+

@@ -1,0 +1,27 @@
+#!/bin/bash
+echo
+echo "[INFO] Preparing build directory"
+echo "--------------------------------"
+echo
+mkdir -p build/gnu
+echo
+echo "[INFO] Compiling"
+echo "----------------"
+echo
+make clean && make
+APLX=chipFwdr.aplx
+BIN_DIR=../../bin
+if [ -e "$APLX" ]
+then
+    echo
+    echo "[INFO] Moving binary"
+    echo "--------------------"
+    mkdir -p $BIN_DIR
+    mv "$APLX" $BIN_DIR/
+    rm -rf build
+    echo
+    echo "[INFO] The aplx is moved into" $BIN_DIR/$APLX
+else
+    echo
+    echo "[ERR] Compilation error"
+fi

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+"${SPINN_DIRS:?SPINN_DIRS is not set}"
+
+BOARD=192.168.240.1
+APPID=16
+
+ybug $BOARD << EOF
+sp root
+app_load chipFwdr.aplx . 2-6 $APPID
+EOF
+

@@ -1,0 +1,8 @@
+APP := stdGov
+OBJECTS = $(BUILD_DIR)profiler_cpuload.o $(BUILD_DIR)profiler_cpuload_isr.o \
+          $(BUILD_DIR)profiler_events.o $(BUILD_DIR)profiler_pll.o \
+          $(BUILD_DIR)profiler_gov.o $(BUILD_DIR)profiler_q.o \
+          $(BUILD_DIR)profiler_temp.o $(BUILD_DIR)profiler_util.o $(BUILD_DIR)profiler_main.o
+THUMB := 1
+include $(SPINN_DIRS)/make/app.make
+

@@ -1,0 +1,14 @@
+=============== This is the master part for decoder - mSpinJPEG ================
+How does it work?
+- spinjpeg needs to know, how big is the buffer in sdram
+  --> GUI sends initial info via port-2 the size of file, and wait ack from spinjpeg
+  --> spinjpeg resize sdram buffer and send ack afterwards
+- we can, conceptually, use leadAp to create a dynamic core selection
+  --> but the GUI will ask first, who is the leader to send the data
+  --> so, let's simplify by deciding that the leader is core-2, and after
+      core-2 are workers
+
+in hDMA:
+/* when the first chunk of jpeg file is received, it triggers
+ * the decoder main loop */
+
